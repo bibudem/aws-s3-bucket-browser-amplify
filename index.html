@@ -10,7 +10,7 @@
             title: 'Fichiers Geos - UdeM', // prefix value with `HTML> ` to render as html, see subtitle
             subtitle: 'HTML>Collection des <b><a href="https://bib.umontreal.ca">Bibliothèques de l\'Université de Montréal</a></b>', // prefix value with `HTML> ` to render as html
             logo: 'Logo-Biblio_UdeM-RVB.svg', 
-            // favicon: 'https://qoomon.github.io/aws-s3-bucket-browser/favicon.ico',
+            favicon: 'favicon.svg',
             primaryColor: '#0057AC',
             allowDownloadAll: true, // enable or disable 'download all' button to download all files as a zip archive
 
@@ -28,7 +28,7 @@
             //   * https://storage.googleapis.com/BUCKET-NAME
             //   The URL should return an XML document with <ListBucketResult> as root element.
             rootPrefix: undefined, // e.g. 'subfolder/'
-            keyExcludePatterns: [/^index\.html$/, /^Urban_3D_Challenge\//,/^Logo-Biblio_UdeM-RVB\.svg$/], // matches againt object key relative to rootPrefix
+            keyExcludePatterns: [/^index\.html$/, /^Urban_3D_Challenge\//,/^Logo-Biblio_UdeM-RVB\.svg$/,^favicon\.svg$], // matches againt object key relative to rootPrefix
             pageSize: 50,
 
             bucketMaskUrl: undefined,
