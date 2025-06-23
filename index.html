@@ -46,7 +46,10 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link id="favicon" rel="shortcut icon"/>
     <title>Bucket Browser</title>
-
+    
+     <!-- Bootstrap 4  -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.6/css/bootstrap.min.css" integrity="sha384-rwoIResjU2yc3z8GV/NPeZWAv56rSmLldC3R/AZzGRnGxQQKnKkoFVhFQhNUwEyJ" crossorigin="anonymous">
+    
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@mdi/font@7.4.47/css/materialdesignicons.min.css"
           integrity="sha384-HphS8cQyN+eYiJ5PMbzShG6qZdRtvHPVLPkYb8JwMkmNgaIxrFVDhQe3jIbq3EZ2"
           crossorigin="anonymous">
@@ -60,6 +63,9 @@
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@ntohq/buefy-next@0.1.4/dist/buefy.min.css"
           integrity="sha384-uKOSQ8X8o+jTwmPclX1z/d6IKB+spCvEua2ysnQprHMuYMf35xBOMGDxejgM2qGS"
           crossorigin="anonymous">
+
+    
+   
     <script>window.process = {env: {NODE_ENV: 'production'}};</script>
     <script src="https://cdn.jsdelivr.net/npm/@ntohq/buefy-next@0.1.4/dist/buefy.min.js"
             integrity="sha384-fd8rwC0JXdulBombqOXIudg/1G+9AbB0zDYPAi8SfJy+RemRrq0jG1TC6PUS8EpX"
@@ -75,26 +81,170 @@
     <script src="https://cdn.jsdelivr.net/npm/fflate@0.8.2/umd/index.min.js"
             integrity="sha384-HqC294x+jARmk/wUrzXlnRpiZrmiHJ4BIKph0mrcMJ/cLuMkNDHY0IjbDanCNhcU"
             crossorigin="anonymous"></script>
-
+    
 
     <!-- Explorer App Style -->
     <style>
+        /* Import des polices depuis Google Fonts */
+        @import url('https://fonts.googleapis.com/css2?family=Figtree:wght@300;400;500;600;700&family=Lora:wght@400;500;600;700&display=swap');
+        
+        /* Appliquez Figtree comme police par défaut */
         body {
+            font-family: 'Figtree', sans-serif!important;
             width: 100vw;
             min-height: 100vh;
             position: relative;
+            font-size: 1rem;
             background-color: #f5f5f5;
             overflow-y: auto;
             --primary-color: #167df0;
         }
 
-        a {
-            color: var(--primary-color);
+        /* Appliquez Lora aux titres principaux */
+        h1, h2, 
+        .header-title h1,
+        .header-title .display-4 {
+            font-family: 'Lora', serif;
+            font-weight: 500;
         }
 
-        #app {
-            padding: 2.25rem 2.5rem;
+        /* Sous-titres en Figtree */
+        h3, h4, h5, h6,
+        .header-title p {
+            font-family: 'Figtree', sans-serif;
+            font-weight: 400; 
         }
+
+        a {
+           color: var(--primary-color);
+        }
+
+        a:hover {
+            color: rgb(151, 199, 243);
+            text-decoration: none;
+        }
+        /* Header */
+        .jumbotron{
+            margin-bottom: 0;
+            min-height: 500px;
+        }
+        .header-with-image {
+            position: relative;
+            width: 100%;
+            height: 250px;
+            overflow: hidden;
+        }
+
+        .header-with-image img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            object-position: center;
+        }
+
+        .header-title {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: linear-gradient(transparent, rgba(11, 12, 16, 0.9));
+            color: white;
+            padding: 2rem 0;
+        }
+
+        .header-title h1 {
+            font-size: 3.5rem;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+            line-height: 112%;
+        }
+
+        .header-title p {
+            font-size: 1.2rem;
+            margin-bottom: 0;
+        }
+
+        .bg-white {
+            background: white!important;
+        }
+
+        /* Footer Styles */
+        .footer-section {
+            background-color: #0b113a;
+            font-family: 'Figtree', sans-serif;
+            color: #cdd1d3;
+            padding-top: 2.5rem;
+        }
+
+        .footer-section h3{
+            font-size: 1.75rem;
+            color: #ffffff;
+        }
+
+        .footer-top {
+            padding-bottom: 40px;
+        }
+
+        .link-footer {
+            margin-bottom: 15px;
+            line-height: 1.6;
+        }
+
+        a.link-footer {
+            color: #cdd1d3!important;
+            text-decoration: none;
+            transition: color 0.3s;
+        }
+        a.link-footer:hover {
+            color: #b2e3fc!important;
+            transition: color 0.3s;
+        }
+
+        .link-footer a:hover {
+            color: #003366;
+            text-decoration: underline;
+        }
+
+        .link-footer img {
+            margin-right: 8px;
+            vertical-align: middle;
+        }
+
+        .img-footer {
+            max-width: 100%;
+            height: auto;
+        }
+
+        .footer-bottom {
+            background-color: #0057AC;
+            padding: 20px 0;
+        }
+
+        .copy-right-text {
+            font-size: 0.9rem;
+        }
+
+        .terms-privacy {
+            margin: 0;
+            padding: 0;
+        }
+
+        .terms-privacy li {
+            margin-left: 15px;
+        }
+
+        /* Responsive adjustments */
+        @media (max-width: 768px) {
+            .footer-section {
+                text-align: center;
+            }
+            
+            .terms-privacy {
+                justify-content: center !important;
+                margin-top: 15px;
+            }
+        }
+
 
         #app #breadcrumbs {
             margin-right: .5em;
@@ -234,27 +384,35 @@
                 display: none !important;
             }
         }
+
     </style>
 </head>
 
 <body>
-
+<!-- Header -->
+<nav class="navbar navbar-toggleable-md navbar-light bg-faded">
+    <button class="navbar-toggler navbar-toggler-right" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+    </button>
+     <a class="navbar-brand" href="/index.html">
+        <img src="assets/images/Logo-Biblio_UdeM-RVB.svg" width="200" height="auto" class="d-inline-block align-top" alt="">
+    </a>
+</nav>
 <!-- Explorer App-->
+
 <div id="app" style="display: none;">
-    <div :style="cssVars">
-        <!-- Header -->
-        <div class="level">
-            <div class="level-left" style="max-width: 100%;">
-                <figure class="level-item image is-128x128" style="margin-right: 1.5rem;">
-                    <img :src="config.logo"/>
-                </figure>
-                <div>
-                    <h1 class="title" v-html="config.titleHTML"></h1>
-                    <h2 class="subtitle" v-html="config.subtitleHTML"></h2>
-                </div>
+<!-- Nouveau Header avec image et titre -->
+    <div class="header-with-image">
+        <img src="assets/images/header.jpg" alt="Image d'en-tête"> <!-- Remplacez par votre image -->
+        <div class="header-title">
+            <div class="container">
+                <h1 class="display-4" v-html="config.titleHTML"></h1>
+                <p  class="lead" v-html="config.subtitleHTML"></p>
             </div>
         </div>
+    </div>
 
+    <div :style="cssVars" class="jumbotron text-center bg-white">   
         <div class="container">
             <!-- Navigation Bar -->
             <div class="container is-clearfix" style="margin-bottom: 1rem;">
@@ -481,13 +639,99 @@
                 </div>
             </div>
         </div>
-
-        <!-- Footer -->
+    </div>
+    <!-- Footer -->
+         <footer class="footer-section">
+            <div class="footer-top">
+                <div class="container">
+                    <div class="row">
+                        <div class="col-lg-4 col-md-6 col-sm-6">
+                            <h3>Nous joindre</h3>
+                            <ul class="list-unstyled pt-4">
+                                <li class="mt-2">
+                                    <a href="https://bib.umontreal.ca/nous-joindre/clavarder" class="link-footer" target="_blank">
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="23" height="23" fill="#ffffff" viewBox="0 0 256 256">
+                                            <path d="M216,80H184V48a16,16,0,0,0-16-16H40A16,16,0,0,0,24,48V176a8,8,0,0,0,13,6.22L72,154V184a16,16,0,0,0,16,16h93.59L219,230.22a8,8,0,0,0,5,1.78,8,8,0,0,0,8-8V96A16,16,0,0,0,216,80ZM66.55,137.78,40,159.25V48H168v88H71.58A8,8,0,0,0,66.55,137.78ZM216,207.25l-26.55-21.47a8,8,0,0,0-5-1.78H88V152h80a16,16,0,0,0,16-16V96h32Z"></path>
+                                        </svg>
+                                        Clavarder avec nous
+                                    </a>
+                                </li>
+                                <li class="mt-2">
+                                    <a href="https://bib.umontreal.ca/nous-joindre/nous-ecrire" class="link-footer" target="_blank">
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="23" height="23" fill="#ffffff" viewBox="0 0 256 256">
+                                            <path d="M227.32,28.68a16,16,0,0,0-15.66-4.08l-.15,0L19.57,82.84a16,16,0,0,0-2.49,29.8L102,154l41.3,84.87A15.86,15.86,0,0,0,157.74,248q.69,0,1.38-.06a15.88,15.88,0,0,0,14-11.51l58.2-191.94c0-.05,0-.1,0-.15A16,16,0,0,0,227.32,28.68ZM157.83,231.85l-.05.14,0-.07-40.06-82.3,48-48a8,8,0,0,0-11.31-11.31l-48,48L24.08,98.25l-.07,0,.14,0L216,40Z"></path>
+                                        </svg>
+                                        Nous écrire
+                                    </a>
+                                </li>
+                                <li class="mt-2">
+                                    <a href="https://bib.umontreal.ca/nous-joindre/notre-equipe" class="link-footer" target="_blank">
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="23" height="23" fill="#ffffff" viewBox="0 0 256 256">
+                                            <path d="M230.92,212c-15.23-26.33-38.7-45.21-66.09-54.16a72,72,0,1,0-73.66,0C63.78,166.78,40.31,185.66,25.08,212a8,8,0,1,0,13.85,8c18.84-32.56,52.14-52,89.07-52s70.23,19.44,89.07,52a8,8,0,1,0,13.85-8ZM72,96a56,56,0,1,1,56,56A56.06,56.06,0,0,1,72,96Z"></path>
+                                        </svg>
+                                        Contacter un membre de notre équipe
+                                    </a>
+                                </li>
+                                <li class="mt-2">
+                                    <a href="tel:+15143437643" class="link-footer">
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="23" height="23" fill="#ffffff" viewBox="0 0 256 256">
+                                            <path d="M222.37,158.46l-47.11-21.11-.13-.06a16,16,0,0,0-15.17,1.4,8.12,8.12,0,0,0-.75.56L134.87,160c-15.42-7.49-31.34-23.29-38.83-38.51l20.78-24.71c.2-.25.39-.5.57-.77a16,16,0,0,0,1.32-15.06l0-.12L97.54,33.64a16,16,0,0,0-16.62-9.52A56.26,56.26,0,0,0,32,80c0,79.4,64.6,144,144,144a56.26,56.26,0,0,0,55.88-48.92A16,16,0,0,0,222.37,158.46ZM176,208A128.14,128.14,0,0,1,48,80,40.2,40.2,0,0,1,82.87,40a.61.61,0,0,0,0,.12l21,47L83.2,111.86a6.13,6.13,0,0,0-.57.77,16,16,0,0,0-1,15.7c9.06,18.53,27.73,37.06,46.46,46.11a16,16,0,0,0,15.75-1.14,8.44,8.44,0,0,0,.74-.56L168.89,152l47,21.05h0s.08,0,.11,0A40.21,40.21,0,0,1,176,208Z"></path>
+                                        </svg>
+                                        514 343-7643
+                                    </a>
+                                </li>
+                                <li class="mt-2">
+                                    <a href="https://www.youtube.com/user/BibliothequesUdeM" class="link-footer" target="_blank">
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="23" height="23" fill="#ffffff" viewBox="0 0 256 256">
+                                            <path d="M164.44,121.34l-48-32A8,8,0,0,0,104,96v64a8,8,0,0,0,12.44,6.66l48-32a8,8,0,0,0,0-13.32ZM120,145.05V111l25.58,17ZM234.33,69.52a24,24,0,0,0-14.49-16.4C185.56,39.88,131,40,128,40s-57.56-.12-91.84,13.12a24,24,0,0,0-14.49,16.4C19.08,79.5,16,97.74,16,128s3.08,48.5,5.67,58.48a24,24,0,0,0,14.49,16.41C69,215.56,120.4,216,127.34,216h1.32c6.94,0,58.37-.44,91.18-13.11a24,24,0,0,0,14.49-16.41c2.59-10,5.67-28.22,5.67-58.48S236.92,79.5,234.33,69.52Zm-15.49,113a8,8,0,0,1-4.77,5.49c-31.65,12.22-85.48,12-86,12H128c-.54,0-54.33.2-86-12a8,8,0,0,1-4.77-5.49C34.8,173.39,32,156.57,32,128s2.8-45.39,5.16-54.47A8,8,0,0,1,41.93,68c30.52-11.79,81.66-12,85.85-12h.27c.54,0,54.38-.18,86,12a8,8,0,0,1,4.77,5.49C221.2,82.61,224,99.43,224,128S221.2,173.39,218.84,182.47Z"></path>
+                                        </svg>
+                                        YouTube
+                                    </a>
+                                </li>
+                            </ul>
+                    </div>
+                        <div class="col-lg-4 col-md-4 col-sm-4">
+                            <h3>À propos</h3>
+                                <ul class="list-unstyled pt-4">
+                                    <li class="mt-2"><a href="https://bib.umontreal.ca/a-propos/notre-organisation/" class="link-footer" target="_blank">Notre organisation</a></li>
+                                    <li class="mt-2"><a href="https://bib.umontreal.ca/a-propos/mission-vision-valeur" class="link-footer" target="_blank">Mission, vision, valeurs et objectifs</a></li>
+                                    <li class="mt-2"><a href="https://bib.umontreal.ca/a-propos/rapports-annuels" class="link-footer" target="_blank">Rapports annuels</a></li>
+                                    <li class="mt-2"><a href="https://bib.umontreal.ca/a-propos/politiques-reglement" class="link-footer" target="_blank">Politique et règlement</a></li>
+                                    <li class="mt-2"><a href="https://bib.umontreal.ca/a-propos/carriere/" class="link-footer" target="_blank">Carrières</a></li>
+                                </ul>
+                        </div>
+                        <div class="col-lg-4 col-md-4 col-sm-4">
+                            <a href="https://bib.umontreal.ca/" target="_blank">
+                                <img src="assets/images/logo-footer.svg" alt="" class="img-footer">
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <div class="container">
+                    <div class="row">
+                        <div class="col-md-6 col-sm-6 text-sm-left text-center">
+                            <span class="copy-right-text">© Université de Montréal, 2025. Tous droits réservés</span>
+                        </div>
+                        <div class="col-md-6 col-sm-6">
+                            <ul class="terms-privacy d-flex justify-content-sm-end justify-content-center list-unstyled">
+                                <li class="link-footer">
+                                    <a href="https://vie-privee.umontreal.ca/confidentialite/" target="_blank" class="link-footer"> Confidentialité</a>
+                                </li>
+                                <li> | </li>
+                                <li class="link-footer">
+                                    <a href="https://vie-privee.umontreal.ca/conditions-dutilisation/" target="_blank" class="link-footer"> Condition d'utilisation</a>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </footer>
         <div class="footer-bucket-url">
             <a :href="`${config.bucketMaskUrl || config.bucketUrl}?prefix=${bucketPrefix}`">Bucket: {{ config.bucketUrl }}</a>
         </div>
-
-    </div>
 </div>
 
 <!-- Preview App -->
