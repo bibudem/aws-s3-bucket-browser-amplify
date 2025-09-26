@@ -934,7 +934,7 @@
                             if (content.key.endsWith('/') && !content.size) {
                                 return {
                                     type: 'prefix',
-                                    name: content.key.split('/')[0] + '/',
+                                    name: content.key.split('/')[0],
                                     prefix: `${this.pathPrefix}${content.key}`
                                 }
                             }
