@@ -28,7 +28,15 @@
             //   * https://storage.googleapis.com/BUCKET-NAME
             //   The URL should return an XML document with <ListBucketResult> as root element.
             rootPrefix: undefined, // e.g. 'subfolder/'
-            keyExcludePatterns: [/\/^_.*/,/\.docx$/,/\.txt$/,/^index\.html$/, /^Urban_3D_Challenge\//,/^Logo-Biblio_UdeM-RVB\.svg$/,/^favicon\.svg$/], // matches againt object key relative to rootPrefix
+            keyExcludePatterns: [
+                    /(^|\/)_[^/]+$/,  // ← attrape tous les fichiers/dossiers commençant par _
+                    /\.docx$/,
+                    /\.txt$/,
+                    /^index\.html$/,
+                    /^Urban_3D_Challenge\//,
+                    /^Logo-Biblio_UdeM-RVB\.svg$/,
+                    /^favicon\.svg$/
+            ],
             pageSize: 50,
 
             bucketMaskUrl: undefined,
