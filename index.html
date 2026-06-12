@@ -314,6 +314,17 @@
                                 style="margin-left: 0.7rem;"
                         ></b-button>
 
+                        <!-- ===== AJOUT LOCAL : bouton télécharger la sélection (début) ===== -->
+                        <b-button
+                                v-if="checkedRows.length > 0"
+                                type="is-primary" rounded :loading="downloadAllFilesProgress !== null"
+                                icon-pack="fas"
+                                icon-left="download"
+                                @click="downloadSelectedFiles"
+                                style="margin-left: 0.7rem;"
+                        >Télécharger la sélection ({{ checkedRows.length }})</b-button>
+                        <!-- ===== AJOUT LOCAL : bouton télécharger la sélection (fin) ===== -->
+
                         <!-- Paginating Buttons -->
                         <div class="container"
                              v-if="nextContinuationToken || previousContinuationTokens.length > 0"
@@ -353,11 +364,17 @@
             </b-progress>
 
             <!-- Content Table -->
+            <!-- ===== AJOUT LOCAL : table sélectionnable (cases à cocher sur les fichiers) ===== -->			
             <b-table
                     :data="pathContentTableData"
                     :default-sort="config.defaultOrder.split('-')[0]"
                     :default-sort-direction="config.defaultOrder.split('-')[1]"
-                    :mobile-cards="true"
+                    :mobile-cards="true" 
+					checkable
+                    checkbox-position="left"
+                    :checked-rows="checkedRows"
+                    :is-row-checkable="(row) => row.type === 'content'"
+                    @check="(rows) => checkedRows = rows.filter(r => r.type === 'content')"
             >
                 <b-table-column
                         v-slot="props"
@@ -755,7 +772,10 @@
 
                     downloadAllFilesCount: null,
                     downloadAllFilesReceivedCount: null,
-                    downloadAllFilesProgress: null,
+                    downloadAllFilesProgress: null,					
+                    /* ===== AJOUT LOCAL : sélection de fichiers (début) ===== */
+                    checkedRows: [],
+                    /* ===== AJOUT LOCAL : sélection de fichiers (fin) ===== */
                 }
             },
             computed: {
@@ -786,7 +806,13 @@
                     this.searchPrefix = this.pathPrefix.replace(/^.*\//, '')
                     window.location.hash = this.pathPrefix
                     this.refresh()
-                }
+                },
+
+                /* ===== AJOUT LOCAL : vide la sélection à tout changement de liste (début) ===== */
+                pathContentTableData() {
+                    this.checkedRows = []
+                },
+                /* ===== AJOUT LOCAL : vide la sélection (fin) ===== */              
             },
             methods: {
                 blurActiveElement() {
@@ -883,6 +909,80 @@
                     this.downloadAllFilesReceivedCount = null;
                     this.downloadAllFilesProgress = null;
                 },
+				
+                /* ===== AJOUT LOCAL : téléchargement de la sélection (début) =====
+                   Bloc entièrement additif : ne modifie pas downloadAllFiles().
+                   _downloadFilesAsZip() reprend la même logique fflate (streaming),
+                   downloadSelectedFiles() l'appelle sur les lignes cochées.
+                   Réutilise les mêmes variables d'état que downloadAllFiles
+                   (downloadAllFilesCount / *ReceivedCount / *Progress) afin de
+                   réutiliser la barre de progression existante sans markup additionnel. */
+                async _downloadFilesAsZip(urls, archiveName) {
+                    if (!urls || urls.length === 0) return;
+
+                    this.downloadAllFilesCount = urls.length;
+                    this.downloadAllFilesReceivedCount = 0;
+                    this.downloadAllFilesProgress = 0;
+
+                    let totalContentLength = 0;
+                    let totalReceivedLength = 0;
+
+                    const archiveData = [];
+                    const archive = new fflate.Zip((err, data, final) => {
+                        if (err) throw err;
+                        archiveData.push(data);
+                    });
+
+                    await Promise.all(urls.map(async (url) => {
+                        const fileName = url.split('/').filter(part => part.trim()).pop();
+                        const fileStream = new fflate.ZipPassThrough(fileName);
+                        archive.add(fileStream);
+
+                        const fileResponse = await fetch(url);
+                        totalContentLength += parseInt(fileResponse.headers.get('Content-Length'));
+                        const fileReader = fileResponse.body.getReader();
+
+                        while (true) {
+                            const {done, value} = await fileReader.read();
+                            if (done) {
+                                fileStream.push(new Uint8Array(), true);
+                                break;
+                            }
+                            fileStream.push(new Uint8Array(value));
+
+                            totalReceivedLength += value.length;
+                            this.downloadAllFilesProgress = (
+                                (totalReceivedLength / totalContentLength) +
+                                (this.downloadAllFilesReceivedCount / this.downloadAllFilesCount)
+                            ) / 2;
+                        }
+                        this.downloadAllFilesReceivedCount++;
+                    })).then(() => archive.end());
+
+                    const archiveBlob = new Blob(archiveData, {type: 'application/octet-stream'});
+                    const objectUrl = window.URL.createObjectURL(archiveBlob);
+                    const link = document.createElement('a');
+                    link.href = objectUrl;
+                    link.download = `${archiveName}.zip`;
+                    link.click();
+                    window.URL.revokeObjectURL(objectUrl);
+
+                    this.downloadAllFilesCount = null;
+                    this.downloadAllFilesReceivedCount = null;
+                    this.downloadAllFilesProgress = null;
+                },
+                async downloadSelectedFiles() {
+                    const urls = this.checkedRows
+                        .filter(row => row.type === 'content')
+                        .map(row => row.url);
+
+                    const folder = this.pathPrefix.split('/').filter(p => p.trim()).pop();
+                    const archiveName = (folder ? folder + '-' : '') + 'selection';
+
+                    await this._downloadFilesAsZip(urls, archiveName);
+                    this.checkedRows = [];
+                },
+                /* ===== AJOUT LOCAL : téléchargement de la sélection (fin) ===== */
                 async refresh() {
                     let listBucketResult
                     try {
