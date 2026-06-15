@@ -1,4 +1,4 @@
-<!-- S3 Bucket Explorer Version: 3.1.3 -->
+<!-- S3 Bucket Explorer Version: 3.3.2 -->
 
 <!DOCTYPE html>
 <html lang="en" style="overflow-y: auto;">
@@ -54,51 +54,56 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link id="favicon" rel="shortcut icon"/>
-    <title>Bucket Browser</title>
+    <title>Fichiers - données géospatiales</title>
+
+    <script>window.process = {env: {NODE_ENV: 'production'}};</script>
 
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@mdi/font@7.4.47/css/materialdesignicons.min.css"
           integrity="sha384-HphS8cQyN+eYiJ5PMbzShG6qZdRtvHPVLPkYb8JwMkmNgaIxrFVDhQe3jIbq3EZ2"
           crossorigin="anonymous">
-    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v6.7.0/css/all.css"
-          integrity="sha384-nMrp5ZsUTqQhbYtRk9ykIA4NlAIb530sj9RpfUkoGv/2gV+x0ZzFdUnT7Q8J8EgH"
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v7.0.0/css/all.css"
+          integrity="sha384-tGBVFh2h9Zcme3k9gJLbGqDpD+jRd419j/6N32rharcTZa1X6xgxug6pFMGonjxU"
           crossorigin="anonymous">
-    <script src="https://cdn.jsdelivr.net/npm/vue@3.5.13/dist/vue.global.prod.js"
-            integrity="sha384-W/1Fp/LgAYO/oTn9Gs+PbeWuMuq1eQCnUMPCeg8POmMYchhzxctjEqtbiCIxDOON"
+    <script src="https://cdn.jsdelivr.net/npm/vue@3.5.18/dist/vue.global.prod.js"
+            integrity="sha384-5lsW6+t+R0w2ifcEht8EF/ho3i18SjJmTvZChKY3oPX1Kd1qTqv05zzXLCXVXjle"
             crossorigin="anonymous"></script>
 
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@ntohq/buefy-next@0.1.4/dist/buefy.min.css"
-          integrity="sha384-uKOSQ8X8o+jTwmPclX1z/d6IKB+spCvEua2ysnQprHMuYMf35xBOMGDxejgM2qGS"
-          crossorigin="anonymous">
-    <script>window.process = {env: {NODE_ENV: 'production'}};</script>
-    <script src="https://cdn.jsdelivr.net/npm/@ntohq/buefy-next@0.1.4/dist/buefy.min.js"
-            integrity="sha384-fd8rwC0JXdulBombqOXIudg/1G+9AbB0zDYPAi8SfJy+RemRrq0jG1TC6PUS8EpX"
-            crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/buefy@3.0.4/dist/buefy.min.js"
+            crossorigin="anonymous"></script> <!-- Also see dynamic loaded stylesheet in main script -->
 
-    <script src="https://cdn.jsdelivr.net/npm/moment@2.30.1/min/moment-with-locales.min.js"            
-            crossorigin="anonymous"></script>
-  
-    <script src="https://cdn.jsdelivr.net/npm/zero-md@3.1.6?register" type="module"
-            integrity="sha384-4yM8tBaev5eSstaMNWa2d8LiZsdtjDIrnLw7UJifOdyCQFisUeavYGRpF5PZbba8"
+    <script src="https://cdn.jsdelivr.net/npm/moment@2.30.1/min/moment.min.js"
+            integrity="sha384-jzJ+sNWbKe71gDLLfQKgdtslQjhK70oKLFN+wmwxyg6mQN7Vem+wzce4pryF0HP/"
             crossorigin="anonymous"></script>
 
     <script src="https://cdn.jsdelivr.net/npm/fflate@0.8.2/umd/index.min.js"
             integrity="sha384-HqC294x+jARmk/wUrzXlnRpiZrmiHJ4BIKph0mrcMJ/cLuMkNDHY0IjbDanCNhcU"
             crossorigin="anonymous"></script>
 
+    <script src="https://cdn.jsdelivr.net/npm/vue-files-preview@1.0.41/umd/vue-files-preview.umd.js"
+            integrity="sha384-/9EzFuSPCZgaWZ6WZG6nAQCnUzGrHwBTNYkQupo/cgagAl9tm2vixX25E0po+nEj"
+            crossorigin="anonymous"></script> <!-- Also see dynamic loaded stylesheet in main script -->
 
     <!-- Explorer App Style -->
     <style>
+        body {
+            --bulma-primary: hsl(200deg 100% 45%);
+            --bulma-primary-h: 200deg;
+            --bulma-primary-s: 100%;
+            --bulma-primary-l: 45%;
+        }
+
         body {
             width: 100vw;
             min-height: 100vh;
             position: relative;
             background-color: #f5f5f5;
             overflow-y: auto;
-            --primary-color: #167df0;
         }
-
-        a {
-            color: var(--primary-color);
+        
+        @media (prefers-color-scheme: dark) {
+             body {
+                 background-color: #222225;
+             }
         }
 
         #app {
@@ -106,6 +111,9 @@
         }
 
         #app #breadcrumbs {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px 6px;
             margin-right: .5em;
         }
 
@@ -115,24 +123,9 @@
         }
 
         #app .search-prefix-matches-path-prefix input.input {
-            color: var(--primary-color) !important;
             font-weight: bold;
         }
-
-        #app .button.is-primary {
-            background-color: var(--primary-color) !important;
-        }
-
-        #app .button.is-primary.is-outlined {
-            background-color: transparent !important;
-            border-color: var(--primary-color) !important;
-            color: var(--primary-color) !important;
-        }
-
-        #app .button.is-primary.is-outlined.is-loading::after {
-            border-color: transparent transparent var(--primary-color) var(--primary-color) !important;
-        }
-
+     
         #app .table .button.is-text {
             padding: .1em .75em;
             height: auto;
@@ -140,7 +133,7 @@
             box-shadow: none;
             background-color: unset;
             user-select: text;
-            color: var(--primary-color);
+
             font-weight: 500;
             text-align: left;
             overflow: hidden;
@@ -169,12 +162,7 @@
 
         #app .input:focus:not(.is-danger),
         #app .select select:focus {
-            border-color: var(--primary-color);
             box-shadow: none;
-        }
-
-        #app .select:not(.is-multiple):not(.is-loading)::after {
-            border-color: var(--primary-color) !important;
         }
 
         #app .name-column > div:first-child {
@@ -254,7 +242,7 @@
         <!-- Header -->
         <div class="level">
             <div class="level-left" style="max-width: 100%;">
-                <figure class="level-item image is-128x128" style="margin-right: 1.5rem;">
+                <figure class="level-item image is-96x96" style="margin-right: 1.5rem;">
                     <img :src="config.logo"/>
                 </figure>
                 <div>
@@ -311,42 +299,40 @@
                                 icon-pack="fas"
                                 icon-left="download"
                                 @click="downloadAllFiles"
-                                style="margin-left: 0.7rem;"
+                                style=" height: fit-content; margin-left: 0.7rem;"
                         ></b-button>
 
-                        <!-- ===== AJOUT LOCAL : bouton télécharger la sélection (début) ===== -->
+                        <!-- Download Selected Button -->
                         <b-button
                                 v-if="checkedRows.length > 0"
                                 type="is-primary" rounded :loading="downloadAllFilesProgress !== null"
                                 icon-pack="fas"
                                 icon-left="download"
                                 @click="downloadSelectedFiles"
-                                style="margin-left: 0.7rem;"
+                                style=" height: fit-content; margin-left: 0.7rem;"
                         >Télécharger la sélection ({{ checkedRows.length }})</b-button>
-                        <!-- ===== AJOUT LOCAL : bouton télécharger la sélection (fin) ===== -->
 
                         <!-- Paginating Buttons -->
-                        <div class="container"
-                             v-if="nextContinuationToken || previousContinuationTokens.length > 0"
-                             style="display: contents;">
-                            <div style="margin-left: 0.6rem;"></div>
-
-                            <b-button
-                                    type="is-primary" rounded
-                                    icon-pack="fas"
-                                    icon-left="angle-left"
-                                    @click="previousPage"
-                                    :disabled="previousContinuationTokens.length === 0"
-                            >
-                            </b-button>
-                            <b-button
-                                    type="is-primary" rounded
-                                    icon-pack="fas"
-                                    icon-right="angle-right"
-                                    @click="nextPage"
-                                    :disabled="!nextContinuationToken"
-                            >
-                            </b-button>
+                        <div style="margin-left: 1.0rem;">
+                            <div v-show="nextContinuationToken || previousContinuationTokens.length > 0"
+                                 class="buttons is-pulled-right">
+                                <b-button
+                                        type="is-primary" rounded
+                                        icon-pack="fas"
+                                        icon-left="angle-left"
+                                        @click="previousPage"
+                                        :disabled="previousContinuationTokens.length === 0"
+                                >
+                                </b-button>
+                                <b-button
+                                        type="is-primary" rounded
+                                        icon-pack="fas"
+                                        icon-right="angle-right"
+                                        @click="nextPage"
+                                        :disabled="!nextContinuationToken"
+                                >
+                                </b-button>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -364,17 +350,16 @@
             </b-progress>
 
             <!-- Content Table -->
-            <!-- ===== AJOUT LOCAL : table sélectionnable (cases à cocher sur les fichiers) ===== -->			
             <b-table
                     :data="pathContentTableData"
                     :default-sort="config.defaultOrder.split('-')[0]"
                     :default-sort-direction="config.defaultOrder.split('-')[1]"
-                    :mobile-cards="true" 
-					checkable
+                    :mobile-cards="true"
+                    checkable
                     checkbox-position="left"
                     :checked-rows="checkedRows"
                     :is-row-checkable="(row) => row.type === 'content'"
-                    @check="(rows) => checkedRows = rows.filter(r => r.type === 'content')"
+                    @check="(rows) => checkedRows = rows.filter(row => row.type === 'content')"
             >
                 <b-table-column
                         v-slot="props"
@@ -403,13 +388,11 @@
 
                         <div class="name-column-buttons">
                             <template v-if="props.row.type === 'content'">
-                                <!-- Markdown Preview Button -->
-                                <b-button v-if="props.row.name.endsWith('.md')"
-                                          tag="a" type="is-text"
+                                <!-- Preview Button -->
+                                <b-button tag="a" type="is-text"
                                           icon-left="image" size="is-medium"
-                                          :href="`#${pathPrefix.replace(/[^/]*$/, '') + props.row.name}?preview=markdown`"
+                                          :href="`#${pathPrefix.replace(/[^/]*$/, '') + props.row.name}?preview`"
                                           target="_blank"
-
                                 ></b-button>
 
                                 <!-- Install Button -->
@@ -485,7 +468,7 @@
             </b-table>
 
             <!-- Paginating Buttons -->
-            <div class="container is-clearfix" style="margin-top: 1rem;">
+            <div class="is-clearfix" style="margin-top: 1rem;">
                 <div v-show="nextContinuationToken || previousContinuationTokens.length > 0"
                      class="buttons is-pulled-right">
                     <b-button
@@ -518,50 +501,10 @@
 
 <!-- Preview App -->
 <div id="preview" style="display: none;">
-    <zero-md id="preview-markdown" src="#">
-        <template>
-            <!-- Sensible host style defaults -->
-            <style>
-                :host {
-                    display: block;
-                    position: relative;
-                    contain: content;
-                }
-
-                :host([hidden]) {
-                    display: none;
-                }
-
-                .markdown-body {
-                    padding: 4.5rem max(calc(100% - max(1012px, min(1012px, 100%))) / 2, 2.5rem);
-                    min-height: calc(100vh - (2 * 4.5rem));
-                }
-            </style>
-
-            <!-- GitHub markdown styles (light/dark) -->
-            <!-- <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/github-markdown-css@5/github-markdown.min.css"/>-->
-            <!-- GitHub markdown styles (light) -->
-            <link rel="stylesheet"
-                  href="https://cdn.jsdelivr.net/npm/github-markdown-css@5/github-markdown-light.min.css"/>
-            <style>
-                .markdown-body {
-                    background: whitesmoke;
-                }
-            </style>
-
-            <!-- Highlightjs Github theme (light) -->
-            <link rel="stylesheet"
-                  href="https://cdn.jsdelivr.net/npm/@highlightjs/cdn-assets@11/styles/github.min.css"/>
-            <!-- Highlightjs Github theme (dark) -->
-            <!-- <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@highlightjs/cdn-assets@11/styles/github-dark.min.css" media="(prefers-color-scheme:dark)" /> -->
-
-            <!-- KaTeX styles (needed for math) -->
-            <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0/dist/katex.min.css"/>
-        </template>
-    </zero-md>
+    <vue-files-preview :url="fileUrl"></vue-files-preview>
 </div>
 
-<!-- GitHub Corner 
+<!-- GitHub Corner -->
 <a href="https://github.com/qoomon/aws-s3-bucket-browser" class="github-corner" aria-label="View source on GitHub">
     <svg width="80" height="80" viewBox="0 0 250 250"
          style="fill:#151513; color:#fff; position: fixed; top: 0; border: 0; right: 0;" aria-hidden="true">
@@ -597,7 +540,7 @@
         }
     }</style>
 </a>
---> 
+
 <!-- Helper Functions -->
 <script>
     String.prototype.removePrefix = function (prefix) {
@@ -631,6 +574,12 @@
         }
         return encodeURI(path).split("").map(char => replaceChars[char] || char).join("");
     }
+    
+    function addLink(linkProps){
+        const link = document.createElement('link')
+        Object.assign(link, linkProps)
+        document.head.appendChild(link)
+    }
 </script>
 
 <!-- Config Script -->
@@ -654,39 +603,23 @@
     }
 
     // try adjusting bucket url to bucket rest api endpoint
-    let match
-    let type
+    let match, type
 
-    if (!match) {
-        type = 'AWS'
-        // check for urls like https://s3.eu-central-1.amazonaws.com/example-bucket/index.html
-        match = config.bucketUrl.match(/(?<protocol>[^:]+):\/\/s3\.(?<region>[^.]+)\.amazonaws.com\/(?<name>[^/]+)(\/(?<prefix>[^?]+))?/)
-    }
-    if (!match) {
-        type = 'AWS'
-        // check for urls like http://example-bucket.s3-website-eu-west-1.amazonaws.com/index.html
-        match = config.bucketUrl.match(/(?<protocol>[^:]+):\/\/(?<name>.+)\.s3-website-(?<region>[^.]+)\.amazonaws\.com(\/(?<prefix>[^?]+))?/)
-    }
-    if (!match) {
-        type = 'AWS'
-        // check for urls like http://example-bucket.s3-website.eu-central-1.amazonaws.com/index.html
-        match = config.bucketUrl.match(/(?<protocol>[^:]+):\/\/(?<name>.+)\.s3-website\.(?<region>[^.]+)\.amazonaws\.com(\/(?<prefix>[^?]+))?/)
-    }
-    if (!match) {
-        type = 'GCP'
-        // check for urls like https://storage.googleapis.com/example-bucket/index.html
-        match = config.bucketUrl.match(/(?<protocol>[^:]+):\/\/storage\.googleapis\.com\/(?<name>[^/]+)(\/(?<prefix>[^?]+))?/)
-    }
-    if (!match) {
-        type = 'DGO'
-        // check for urls like https://example-bucket.nyc3.digitaloceanspaces.com/index.html
-        // check for urls like https://example-bucket.nyc3.cdn.digitaloceanspaces.com/index.html
-        match = config.bucketUrl.match(/(?<protocol>[^:]+):\/\/(?<name>.+)\.(?<region>[^.]+)\.(?<domain>(cdn\.)?digitaloceanspaces\.com)(\/(?<prefix>[^?]+))?/)
-    }
-    if (!match) {
-        type = 'IBM'
-        // check for urls like http://example-bucket.s3-web.us-south.cloud-object-storage.appdomain.cloud/index.html
-        match = config.bucketUrl.match(/(?<protocol>[^:]+):\/\/(?<name>.+)\.s3-web\.(?<region>[^.]+)\.cloud-object-storage\.appdomain\.cloud(\/(?<prefix>[^?]+))?/)
+    const detectors = [
+        { type: 'AWS', regex: /(?<protocol>[^:]+):\/\/s3\.(?<region>[^.]+)\.amazonaws.com\/(?<name>[^/]+)(\/(?<prefix>[^?]+))?/ },
+        { type: 'AWS', regex: /(?<protocol>[^:]+):\/\/(?<name>.+)\.s3-website-(?<region>[^.]+)\.amazonaws\.com(\/(?<prefix>[^?]+))?/ },
+        { type: 'AWS', regex: /(?<protocol>[^:]+):\/\/(?<name>.+)\.s3-website\.(?<region>[^.]+)\.amazonaws\.com(\/(?<prefix>[^?]+))?/ },
+        { type: 'GCP', regex: /(?<protocol>[^:]+):\/\/storage\.googleapis\.com\/(?<name>[^/]+)(\/(?<prefix>[^?]+))?/ },
+        { type: 'DGO', regex: /(?<protocol>[^:]+):\/\/(?<name>.+)\.(?<region>[^.]+)\.(?<domain>(cdn\.)?digitaloceanspaces\.com)(\/(?<prefix>[^?]+))?/ },
+        { type: 'IBM', regex: /(?<protocol>[^:]+):\/\/(?<name>.+)\.s3-web\.(?<region>[^.]+)\.cloud-object-storage\.appdomain\.cloud(\/(?<prefix>[^?]+))?/ }
+    ];
+
+    for (const detector of detectors) {
+        match = config.bucketUrl.match(detector.regex);
+        if (match) {
+            type = detector.type
+            break
+        }
     }
 
     if (match) {
@@ -720,41 +653,58 @@
 
 <!-- Main Script -->
 <script>
-    const initialHashValue = decodeURIComponent(window.location.hash).replace(/^#/, '') || ''
-    const initialHashValueParams = new URLSearchParams(initialHashValue.replace(/^.*?(\?|$)/, ''))
-    const userLang = navigator.language || navigator.userLanguage; // userLanguage pour IE
-	moment.locale(userLang);
-    // preview mode
-    if (initialHashValueParams.get('preview')) {
-        document.getElementById('app').remove()
-        document.getElementById('preview').style.display = 'block'
+    const initialHashValue = decodeURIComponent(window.location.hash).replace(/^#/, '') ?? ''
+    const paramters = new URLSearchParams(initialHashValue.split(/\?(.*)/s, 2)[1] ?? '') 
+    if (initialHashValue && paramters.has('preview')) {
+      // preview mode
+      addLink({
+        rel:"stylesheet",
+        href: "https://cdn.jsdelivr.net/bootstrap/3.2.0/css/bootstrap.css",
+        crossOrigin:"anonymous",
+      })
+      addLink({
+        rel:"stylesheet",
+        href: "https://cdn.jsdelivr.net/highlight.js/9.1.0/styles/github.min.css",
+        crossOrigin:"anonymous",
+      })
+      addLink({
+        rel:"stylesheet",
+        href: "https://cdn.jsdelivr.net/npm/vue-files-preview@1.0.41/umd/style.css",
+        crossOrigin:"anonymous",
+      })
+    
+      
+      document.getElementById('app').remove()
+      const appElementId = 'preview'
+      document.getElementById(appElementId).style.display = 'block'
 
-        const filePath = initialHashValue.replace(/\?.*$/, '')
-        const fileUrl = urlFromFilePath(filePath)
+      const filePath = initialHashValue.replace(/\?.*$/, '')
+      const fileUrl = urlFromFilePath(filePath)
 
-        const previewFormat = initialHashValueParams.get('preview')
-        const previewElement = document.querySelector(`#preview > #preview-${previewFormat}`);
-        ;// remove all other preview elements
-        [...document.querySelectorAll('#preview > *')]
-            .filter(element => element.id !== previewElement?.id)
-            .forEach(element => element.remove())
-        // set source of preview element
-        switch (previewFormat) {
-            case 'markdown':
-                previewElement.src = fileUrl
-                break
-            default:
-                alert(`Unsupported preview for ${previewFormat} files!`)
-        }
+      function urlFromFilePath(filePath) {
+          return `${(config.bucketMaskUrl || config.bucketUrl).replace(/\/*$/, '')}/${encodePath(filePath)}`
+      }
 
-        function urlFromFilePath(filePath) {
-            return `${(config.bucketMaskUrl || config.bucketUrl).replace(/\/*$/, '')}/${encodePath(filePath)}`
-        }
-    }
-    // explorer mode
-    else {
+      const app = Vue.createApp({
+          data() {
+              return {
+                  fileUrl,
+              }
+          },
+      })
+      app.use(VueFilesPreview)
+      app.mount(`#${appElementId}`)
+    } else {
+        // explorer mode
+        addLink({
+          rel:"stylesheet",
+          href: "https://cdn.jsdelivr.net/npm/buefy@3.0.4/dist/css/buefy.min.css",
+          crossOrigin:"anonymous",
+        })
+        
         document.getElementById('preview').remove()
-        document.getElementById('app').style.display = 'block'
+        const appElementId = 'app'
+        document.getElementById(appElementId).style.display = 'block'
 
         const app = Vue.createApp({
             data() {
@@ -772,10 +722,9 @@
 
                     downloadAllFilesCount: null,
                     downloadAllFilesReceivedCount: null,
-                    downloadAllFilesProgress: null,					
-                    /* ===== AJOUT LOCAL : sélection de fichiers (début) ===== */
+                    downloadAllFilesProgress: null,
+
                     checkedRows: [],
-                    /* ===== AJOUT LOCAL : sélection de fichiers (fin) ===== */
                 }
             },
             computed: {
@@ -807,12 +756,10 @@
                     window.location.hash = this.pathPrefix
                     this.refresh()
                 },
-
-                /* ===== AJOUT LOCAL : vide la sélection à tout changement de liste (début) ===== */
                 pathContentTableData() {
+                    // reset selection whenever the listing changes (navigation, pagination, search)
                     this.checkedRows = []
-                },
-                /* ===== AJOUT LOCAL : vide la sélection (fin) ===== */              
+                }
             },
             methods: {
                 blurActiveElement() {
@@ -845,30 +792,27 @@
                         this.refresh()
                     }
                 },
-                async downloadAllFiles() {
+                // Download the given file urls as a single zip archive (shared by
+                // "download all" and "download selected").
+                async downloadFilesAsZip(urls, archiveName) {
+                    if (!urls || urls.length === 0) return;
 
-
-                    const archiveFiles = this.pathContentTableData
-                        .filter(item => item.type === 'content')
-                        .map(item => item.url);
-
-                    this.downloadAllFilesCount = archiveFiles.length;
+                    this.downloadAllFilesCount = urls.length;
                     this.downloadAllFilesReceivedCount = 0;
                     this.downloadAllFilesProgress = 0;
 
                     let totalContentLength = 0;
                     let totalReceivedLength = 0;
+                    let unknownTotal = false; // true if any file lacks Content-Length
 
-                    const archiveName = this.pathPrefix.split('/')
-                        .filter(part => part.trim()).pop();
-                    console.debug(`create archive for ${archiveName}...`)
+                    console.debug(`create archive ${archiveName}...`)
                     const archiveData = []
                     const archive = new fflate.Zip((err, data, final) => {
                         if (err) throw err;
                         archiveData.push(data);
                     });
 
-                    await Promise.all(archiveFiles.map(async (url) => {
+                    await Promise.all(urls.map(async (url) => {
                         const fileName = url.split('/')
                             .filter(part => part.trim()).pop();
                         console.debug(`downloading ${fileName}...`);
@@ -876,7 +820,9 @@
                         archive.add(fileStream);
 
                         const fileResponse = await fetch(url);
-                        totalContentLength += parseInt(fileResponse.headers.get('Content-Length'));
+                        const contentLengthHeader = fileResponse.headers.get('Content-Length');
+                        const contentLength = contentLengthHeader ? Number(contentLengthHeader) : 0;
+                        if (contentLength > 0) totalContentLength += contentLength; else unknownTotal = true;
                         const fileReader = fileResponse.body.getReader();
 
                         while (true) {
@@ -888,10 +834,15 @@
                             fileStream.push(new Uint8Array(value));
 
                             totalReceivedLength += value.length;
-                            this.downloadAllFilesProgress = (
-                                (totalReceivedLength / totalContentLength) +
-                                (this.downloadAllFilesReceivedCount / this.downloadAllFilesCount)
-                            ) / 2;
+                            if (!unknownTotal && totalContentLength > 0) {
+                                this.downloadAllFilesProgress = (
+                                    (totalReceivedLength / totalContentLength) +
+                                    (this.downloadAllFilesReceivedCount / this.downloadAllFilesCount)
+                                ) / 2;
+                            } else {
+                                // fall back to file-count based progress when sizes are unknown
+                                this.downloadAllFilesProgress = (this.downloadAllFilesReceivedCount / this.downloadAllFilesCount);
+                            }
                         }
                         this.downloadAllFilesReceivedCount++;
                     })).then(() => archive.end());
@@ -909,80 +860,23 @@
                     this.downloadAllFilesReceivedCount = null;
                     this.downloadAllFilesProgress = null;
                 },
-				
-                /* ===== AJOUT LOCAL : téléchargement de la sélection (début) =====
-                   Bloc entièrement additif : ne modifie pas downloadAllFiles().
-                   _downloadFilesAsZip() reprend la même logique fflate (streaming),
-                   downloadSelectedFiles() l'appelle sur les lignes cochées.
-                   Réutilise les mêmes variables d'état que downloadAllFiles
-                   (downloadAllFilesCount / *ReceivedCount / *Progress) afin de
-                   réutiliser la barre de progression existante sans markup additionnel. */
-                async _downloadFilesAsZip(urls, archiveName) {
-                    if (!urls || urls.length === 0) return;
-
-                    this.downloadAllFilesCount = urls.length;
-                    this.downloadAllFilesReceivedCount = 0;
-                    this.downloadAllFilesProgress = 0;
-
-                    let totalContentLength = 0;
-                    let totalReceivedLength = 0;
-
-                    const archiveData = [];
-                    const archive = new fflate.Zip((err, data, final) => {
-                        if (err) throw err;
-                        archiveData.push(data);
-                    });
-
-                    await Promise.all(urls.map(async (url) => {
-                        const fileName = url.split('/').filter(part => part.trim()).pop();
-                        const fileStream = new fflate.ZipPassThrough(fileName);
-                        archive.add(fileStream);
-
-                        const fileResponse = await fetch(url);
-                        totalContentLength += parseInt(fileResponse.headers.get('Content-Length'));
-                        const fileReader = fileResponse.body.getReader();
-
-                        while (true) {
-                            const {done, value} = await fileReader.read();
-                            if (done) {
-                                fileStream.push(new Uint8Array(), true);
-                                break;
-                            }
-                            fileStream.push(new Uint8Array(value));
-
-                            totalReceivedLength += value.length;
-                            this.downloadAllFilesProgress = (
-                                (totalReceivedLength / totalContentLength) +
-                                (this.downloadAllFilesReceivedCount / this.downloadAllFilesCount)
-                            ) / 2;
-                        }
-                        this.downloadAllFilesReceivedCount++;
-                    })).then(() => archive.end());
-
-                    const archiveBlob = new Blob(archiveData, {type: 'application/octet-stream'});
-                    const objectUrl = window.URL.createObjectURL(archiveBlob);
-                    const link = document.createElement('a');
-                    link.href = objectUrl;
-                    link.download = `${archiveName}.zip`;
-                    link.click();
-                    window.URL.revokeObjectURL(objectUrl);
-
-                    this.downloadAllFilesCount = null;
-                    this.downloadAllFilesReceivedCount = null;
-                    this.downloadAllFilesProgress = null;
+                async downloadAllFiles() {
+                    const urls = this.pathContentTableData
+                        .filter(item => item.type === 'content')
+                        .map(item => item.url);
+                    const archiveName = this.pathPrefix.split('/')
+                        .filter(part => part.trim()).pop();
+                    await this.downloadFilesAsZip(urls, archiveName);
                 },
                 async downloadSelectedFiles() {
                     const urls = this.checkedRows
                         .filter(row => row.type === 'content')
                         .map(row => row.url);
-
-                    const folder = this.pathPrefix.split('/').filter(p => p.trim()).pop();
-                    const archiveName = (folder ? folder + '-' : '') + 'selection';
-
-                    await this._downloadFilesAsZip(urls, archiveName);
+                    const archiveName = this.pathPrefix.split('/')
+                        .filter(part => part.trim()).pop();
+                    await this.downloadFilesAsZip(urls, archiveName);
                     this.checkedRows = [];
                 },
-                /* ===== AJOUT LOCAL : téléchargement de la sélection (fin) ===== */
                 async refresh() {
                     let listBucketResult
                     try {
@@ -1077,19 +971,6 @@
 
                         const valueA = rowA[columnName]
                         const valueB = rowB[columnName]
-
-                        // Pour la colonne 'name', comparer en minuscules
-                        if (columnName === 'name' && typeof valueA === 'string' && typeof valueB === 'string') {
-                        const lowerA = valueA.toLowerCase()
-                        const lowerB = valueB.toLowerCase()
-                        if (lowerA !== lowerB) {
-                            return isAsc ?
-                            (lowerA < lowerB ? -1 : 1) :
-                            (lowerA < lowerB ? 1 : -1)
-                        }
-                        return 0
-                    }
-
                         if (valueA != valueB) {
                             if (valueA === undefined) {
                                 return isAsc ? -1 : 1
@@ -1148,7 +1029,7 @@
             }
         })
         app.use(Buefy.default, {defaultIconPack: 'fas'})
-        app.mount('#app')
+        app.mount(`#${appElementId}`)
     }
 </script>
 </body>
