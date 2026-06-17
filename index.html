@@ -222,8 +222,24 @@
                 display: none !important;
             }
 
+            /* Nom en pleine largeur, taille/date en dessous (lecture mobile) */
+            #app .name-column {
+                flex-direction: column;
+                align-items: stretch;
+                text-align: left;
+            }
             #app .name-column > div:first-child {
-                max-width: calc(100% - 5.5rem);
+                max-width: 100%;
+                width: 100%;
+                padding-right: 2.25rem; /* dégage la case à cocher du coin */
+            }
+            #app .name-column-details {
+                flex-direction: row;
+                justify-content: flex-start;
+                align-items: center;
+                gap: 0.75rem;
+                min-width: 0;
+                margin-top: 0.15rem;
             }
 
             #app .size-column,
@@ -252,6 +268,8 @@
                 overflow-wrap: anywhere;
                 height: auto;
                 text-align: left;
+                justify-content: flex-start;
+                border-radius: 6px;
             }
         }
     </style>
