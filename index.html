@@ -231,14 +231,27 @@
                 display: none !important;
             }
 
-            /* Sélection de fichiers : garder la case à cocher compacte en vue carte (mobile) */
-            #app .table-wrapper.has-mobile-cards td.checkbox-cell {
-                border-bottom: none !important;
-                padding: 0.4rem 0.75rem 0 !important;
-                min-height: 0 !important;
+            /* Sélection de fichiers : case dans le coin de la carte (mobile), hors du flux */
+            #app .b-table .table-wrapper.has-mobile-cards tbody tr {
+                position: relative;
             }
-            #app .table-wrapper.has-mobile-cards td.checkbox-cell::before {
+            #app .b-table .table-wrapper.has-mobile-cards td.checkbox-cell {
+                position: absolute;
+                top: 0.5rem;
+                right: 0.5rem;
+                width: auto;
+                padding: 0;
+                border: 0;
+            }
+            #app .b-table .table-wrapper.has-mobile-cards td.checkbox-cell::before {
                 display: none !important;
+            }
+            /* Noms longs : retour à la ligne au lieu du défilement horizontal */
+            #app .name-column .button {
+                white-space: normal;
+                overflow-wrap: anywhere;
+                height: auto;
+                text-align: left;
             }
         }
     </style>
