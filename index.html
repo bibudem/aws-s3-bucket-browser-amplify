@@ -262,6 +262,17 @@
             #app .b-table .table-wrapper.has-mobile-cards td.checkbox-cell::before {
                 display: none !important;
             }
+            /* En-tête "tout sélectionner" : libellé en mode carte */
+            #app .b-table .table-wrapper.has-mobile-cards thead tr .checkbox-cell {
+                display: flex;
+                align-items: center;
+                justify-content: space-between;
+                padding: 0.5rem 0.75rem;
+            }
+            #app .b-table .table-wrapper.has-mobile-cards thead tr .checkbox-cell::before {
+                content: "Sélectionner tout";
+                font-weight: 600;
+            }
             /* Noms longs : retour à la ligne au lieu du défilement horizontal */
             #app .name-column .button {
                 white-space: normal;
