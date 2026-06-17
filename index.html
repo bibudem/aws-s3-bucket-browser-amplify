@@ -221,6 +221,34 @@
             #app .modified-column {
                 display: none !important;
             }
+
+            /* Selection checkbox: keep it in the card corner instead of a full-width empty band */
+            #app .b-table .table-wrapper.has-mobile-cards tbody tr {
+                position: relative;
+            }
+            #app .b-table .table-wrapper.has-mobile-cards td.checkbox-cell {
+                position: absolute;
+                top: 0.5rem;
+                right: 0.5rem;
+                width: auto;
+                padding: 0;
+                border: 0;
+            }
+            #app .b-table .table-wrapper.has-mobile-cards td.checkbox-cell::before {
+                display: none !important;
+            }
+
+            /* "Select all" header: show a label in card view instead of an empty card */
+            #app .b-table .table-wrapper.has-mobile-cards thead tr .checkbox-cell {
+                display: flex;
+                align-items: center;
+                justify-content: space-between;
+                padding: 0.5rem 0.75rem;
+            }
+            #app .b-table .table-wrapper.has-mobile-cards thead tr .checkbox-cell::before {
+                content: "Select all";
+                font-weight: 600;
+            }
         }
     </style>
 </head>
