@@ -7,14 +7,16 @@
     <!-- Configuration -->
     <script>
         const config = {
-            title: 'Bucket Browser', // prefix value with `HTML> ` to render as html, see subtitle
-            subtitle: 'HTML>made with ♥ by <b><a href="https://qoo.monster">qoomon</a></b>', // prefix value with `HTML> ` to render as html
-            logo: 'https://qoomon.github.io/aws-s3-bucket-browser/logo.png',
-            favicon: 'https://qoomon.github.io/aws-s3-bucket-browser/favicon.ico',
-            primaryColor: '#167df0',
+            title: 'Fichiers - données géospatiales', // prefix value with `HTML> ` to render as html, see subtitle
+            subtitle: 'HTML>Collection des <b><a href="https://bib.umontreal.ca">Bibliothèques de l\'Université de Montréal</a></b>', // prefix value with `HTML> ` to render as html
+            logo: 'Logo-Biblio_UdeM-RVB.svg', 
+            favicon: 'https://studio.bib.umontreal.ca/img/favicon.svg',
+            primaryColor: '#0057AC',
             allowDownloadAll: true, // enable or disable 'download all' button to download all files as a zip archive
 
-            bucketUrl: undefined,
+            //bucketUrl: 'https://geos-udem.s3.amazonaws.com/',
+			//bucketUrl:  'https://geos-udem.s3.ca-central-1.amazonaws.com',		
+			bucketUrl: 'https://d1mmd4f8vnt6l0.cloudfront.net/',
             // If bucketUrl is undefined, this script tries to determine bucket Rest API URL from this file location itself.
             //   This will only work for locations like these
             //   * https://s3.BUCKET-REGION.amazonaws.com/BUCKET-NAME/index.html
@@ -28,7 +30,14 @@
             //   * https://storage.googleapis.com/BUCKET-NAME
             //   The URL should return an XML document with <ListBucketResult> as root element.
             rootPrefix: undefined, // e.g. 'subfolder/'
-            keyExcludePatterns: [/^index\.html$/, /^Urban_3D_Challenge\//], // matches againt object key relative to rootPrefix
+            keyExcludePatterns: [
+                    /(^|\/)_[^/]+$/,  // attrape tous les fichiers/dossiers commençant par _
+                    /\.docx$/, // terminant par docx
+                    /\.txt$/, // terminant pas .txt
+                    /^index\.html$/, // fichier index.html                    
+                    /^Logo-Biblio_UdeM-RVB\.svg$/, //fichier logo à la racine
+                    /^favicon\.svg$/ // fichier favicon
+            ],
             pageSize: 50,
 
             bucketMaskUrl: undefined,
@@ -45,7 +54,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link id="favicon" rel="shortcut icon"/>
-    <title>Bucket Browser</title>
+    <title>Fichiers - données géospatiales</title>
 
     <script>window.process = {env: {NODE_ENV: 'production'}};</script>
 
@@ -222,28 +231,14 @@
                 display: none !important;
             }
 
-            /* Selection checkbox: keep it in the card corner instead of a full-width empty band */
-            #app .b-table .table-wrapper.has-mobile-cards tbody tr {
-                position: relative;
+            /* Sélection de fichiers : garder la case à cocher compacte en vue carte (mobile) */
+            #app .table-wrapper.has-mobile-cards td.checkbox-cell {
+                border-bottom: none !important;
+                padding: 0.4rem 0.75rem 0 !important;
+                min-height: 0 !important;
             }
-            #app .b-table .table-wrapper.has-mobile-cards td.checkbox-cell {
-                position: absolute;
-                top: 0.5rem;
-                right: 0.5rem;
-                width: auto;
-                padding: 0;
-                border: 0;
-            }
-            #app .b-table .table-wrapper.has-mobile-cards td.checkbox-cell::before {
+            #app .table-wrapper.has-mobile-cards td.checkbox-cell::before {
                 display: none !important;
-            }
-
-            /* Long file names wrap instead of forcing horizontal scrolling */
-            #app .name-column .button {
-                white-space: normal;
-                overflow-wrap: anywhere;
-                height: auto;
-                text-align: left;
             }
         }
     </style>
@@ -295,7 +290,7 @@
                             <b-input
                                     rounded
                                     v-model="searchPrefix"
-                                    placeholder="search by prefix"
+                                    placeholder="Rechercher"
                                     icon="magnifying-glass"
                                     icon-clickable
                                     @icon-click="searchByPrefix"
@@ -325,7 +320,7 @@
                                 icon-left="download"
                                 @click="downloadSelectedFiles"
                                 style=" height: fit-content; margin-left: 0.7rem;"
-                        >{{ checkedRows.length }}</b-button>
+                        >Télécharger la sélection ({{ checkedRows.length }})</b-button>
 
                         <!-- Paginating Buttons -->
                         <div style="margin-left: 1.0rem;">
@@ -379,7 +374,7 @@
                 <b-table-column
                         v-slot="props"
                         field="name"
-                        label="Name"
+                        label="Nom"
                         sortable :custom-sort="sortTableData('name')"
                         cell-class="name-column"
                 >
@@ -449,7 +444,7 @@
                 <b-table-column
                         v-slot="props"
                         field="size" numeric
-                        label="Size"
+                        label="Taille"
                         sortable :custom-sort="sortTableData('size')"
                         right width="128"
                         cell-class="size-column"
@@ -459,7 +454,7 @@
                 <b-table-column
                         v-slot="props"
                         field="dateModified"
-                        label="Date Modified"
+                        label="Date de modification"
                         sortable :custom-sort="sortTableData('dateModified')"
                         centered width="256"
                         cell-class="modified-column"
