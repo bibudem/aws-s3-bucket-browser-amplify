@@ -13,7 +13,9 @@
             favicon: 'https://studio.bib.umontreal.ca/img/favicon.svg',
             primaryColor: '#0057AC',
             allowDownloadAll: true, // enable or disable 'download all' button to download all files as a zip archive
-	        // Bucket via Cloudfront
+
+            //bucketUrl: 'https://geos-udem.s3.amazonaws.com/',
+			//bucketUrl:  'https://geos-udem.s3.ca-central-1.amazonaws.com',		
 			bucketUrl: 'https://d1mmd4f8vnt6l0.cloudfront.net/',
             // If bucketUrl is undefined, this script tries to determine bucket Rest API URL from this file location itself.
             //   This will only work for locations like these
@@ -226,6 +228,16 @@
 
             #app .size-column,
             #app .modified-column {
+                display: none !important;
+            }
+
+            /* Sélection de fichiers : garder la case à cocher compacte en vue carte (mobile) */
+            #app .table-wrapper.has-mobile-cards td.checkbox-cell {
+                border-bottom: none !important;
+                padding: 0.4rem 0.75rem 0 !important;
+                min-height: 0 !important;
+            }
+            #app .table-wrapper.has-mobile-cards td.checkbox-cell::before {
                 display: none !important;
             }
         }
@@ -490,11 +502,9 @@
         </div>
 
         <!-- Footer -->
-		<!--
         <div class="footer-bucket-url">
             <a :href="`${config.bucketMaskUrl || config.bucketUrl}?prefix=${bucketPrefix}`">Bucket: {{ config.bucketUrl }}</a>
         </div>
-		-->
 
     </div>
 </div>
@@ -505,7 +515,6 @@
 </div>
 
 <!-- GitHub Corner -->
-<!--
 <a href="https://github.com/qoomon/aws-s3-bucket-browser" class="github-corner" aria-label="View source on GitHub">
     <svg width="80" height="80" viewBox="0 0 250 250"
          style="fill:#151513; color:#fff; position: fixed; top: 0; border: 0; right: 0;" aria-hidden="true">
@@ -541,7 +550,6 @@
         }
     }</style>
 </a>
--->
 
 <!-- Helper Functions -->
 <script>
